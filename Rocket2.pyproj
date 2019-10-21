@@ -1,0 +1,172 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>b3f72d8d-c7b5-42b4-8a41-2929f258117a</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>Main.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Rocket2</Name>
+    <RootNamespace>Rocket2</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Aircraft.py" />
+    <Compile Include="Buttons.py" />
+    <Compile Include="Enemy\EnemyBullet.py" />
+    <Compile Include="Enemy\EnemyShip.py" />
+    <Compile Include="GameFunctions.py" />
+    <Compile Include="GreetScreen.py" />
+    <Compile Include="Help.py" />
+    <Compile Include="Main.py" />
+    <Compile Include="Music\Music.py" />
+    <Compile Include="ScoreBoard\ScoreBoard.py" />
+    <Compile Include="Settings.py" />
+    <Compile Include="Stars.py" />
+    <Compile Include="TimeBar.py" />
+    <Compile Include="Weapon\AddFire.py" />
+    <Compile Include="Weapon\AttachAircraft.py" />
+    <Compile Include="Weapon\Bullet.py" />
+    <Compile Include="Weapon\BulletSupport.py" />
+    <Compile Include="Weapon\Invincible.py" />
+    <Compile Include="Weapon\Laser.py" />
+    <Compile Include="Weapon\Missile.py" />
+    <Compile Include="Weapon\OmegaLaser.py" />
+    <Compile Include="Weapon\Shield.py" />
+    <Compile Include="Weapon\SpeedUp.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Enemy\" />
+    <Folder Include="Enemy\__pycache__\" />
+    <Folder Include="GameMode\" />
+    <Folder Include="Music\" />
+    <Folder Include="Music\__pycache__\" />
+    <Folder Include="pictures\" />
+    <Folder Include="pictures\AirCraft\" />
+    <Folder Include="pictures\Buttons\" />
+    <Folder Include="pictures\Buttons\Again\" />
+    <Folder Include="pictures\Buttons\GreetScreen\" />
+    <Folder Include="pictures\Buttons\Option\" />
+    <Folder Include="pictures\Buttons\Pause\" />
+    <Folder Include="pictures\Buttons\ScreenSize\" />
+    <Folder Include="pictures\TimeBarPictures\" />
+    <Folder Include="ScoreBoard\" />
+    <Folder Include="ScoreBoard\__pycache__\" />
+    <Folder Include="Weapon\" />
+    <Folder Include="Weapon\__pycache__\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Enemy\__pycache__\EnemyBullet.cpython-37.pyc" />
+    <Content Include="Enemy\__pycache__\EnemyShip.cpython-37.pyc" />
+    <Content Include="Music\9h00.jpg" />
+    <Content Include="Music\9h00.mp3" />
+    <Content Include="Music\Distress_Signa.jpg" />
+    <Content Include="Music\Distress_Signa.mp3" />
+    <Content Include="Music\Exchange.jpg" />
+    <Content Include="Music\Exchange.mp3" />
+    <Content Include="Music\MN84_Theme.jpg" />
+    <Content Include="Music\MN84_Theme.mp3" />
+    <Content Include="Music\Shoulder_of_Orion.jpg" />
+    <Content Include="Music\Shoulder_of_Orion.mp3" />
+    <Content Include="Music\Spoiler_Original_Mix.jpg" />
+    <Content Include="Music\Spoiler_Original_Mix.mp3" />
+    <Content Include="Music\Sung-Thunder_Love.jpg" />
+    <Content Include="Music\Sung-Thunder_Love.mp3" />
+    <Content Include="Music\SYNTHWAVE_DEMO_02.jpg" />
+    <Content Include="Music\SYNTHWAVE_DEMO_02.mp3" />
+    <Content Include="Music\__pycache__\Music.cpython-37.pyc" />
+    <Content Include="pictures\AddFire.png" />
+    <Content Include="pictures\AddFireOrigin.png" />
+    <Content Include="pictures\AirCraft\0.png" />
+    <Content Include="pictures\AirCraft\1.png" />
+    <Content Include="pictures\AirCraft\2.png" />
+    <Content Include="pictures\AirCraft\3.png" />
+    <Content Include="pictures\AirCraft\4.png" />
+    <Content Include="pictures\AttachAircraft.png" />
+    <Content Include="pictures\Bullet.png" />
+    <Content Include="pictures\BulletSupport.png" />
+    <Content Include="pictures\Buttons\Again\AgainButton.png" />
+    <Content Include="pictures\Buttons\GreetScreen\HelpButton.png" />
+    <Content Include="pictures\Buttons\GreetScreen\OptionButton.png" />
+    <Content Include="pictures\Buttons\GreetScreen\QuitGameButton.png" />
+    <Content Include="pictures\Buttons\GreetScreen\StartGameButton.png" />
+    <Content Include="pictures\Buttons\Option\ChangeAircraftButton.png" />
+    <Content Include="pictures\Buttons\Option\ChangeModeButton.png" />
+    <Content Include="pictures\Buttons\Option\ChangeMusicButton.png" />
+    <Content Include="pictures\Buttons\Option\ChangeScreenSizeButton.png" />
+    <Content Include="pictures\Buttons\Pause\PauseGoMenuButton.png" />
+    <Content Include="pictures\Buttons\Pause\PauseOptionButton.png" />
+    <Content Include="pictures\Buttons\Pause\PauseQuitButton.png" />
+    <Content Include="pictures\Buttons\Pause\PauseResumeButton.png" />
+    <Content Include="pictures\Buttons\ScreenSize\1000.png" />
+    <Content Include="pictures\Buttons\ScreenSize\1200.png" />
+    <Content Include="pictures\Buttons\ScreenSize\1400.png" />
+    <Content Include="pictures\Buttons\ScreenSize\1600.png" />
+    <Content Include="pictures\Buttons\ScreenSize\600.png" />
+    <Content Include="pictures\Buttons\ScreenSize\800.png" />
+    <Content Include="pictures\Buttons\ScreenSize\ChooseSize.png" />
+    <Content Include="pictures\Buttons\ScreenSize\FullScreen.png" />
+    <Content Include="pictures\Buttons\ScreenSize\Height.png" />
+    <Content Include="pictures\Buttons\ScreenSize\IsFull.png" />
+    <Content Include="pictures\Buttons\ScreenSize\NotFullScreen.png" />
+    <Content Include="pictures\Buttons\ScreenSize\Width.png" />
+    <Content Include="pictures\EnemyBossShip.png" />
+    <Content Include="pictures\EnemyBullet.png" />
+    <Content Include="pictures\EnemyShip.png" />
+    <Content Include="pictures\EnemyShipClassic.png" />
+    <Content Include="pictures\EnemyShipGetFire.png" />
+    <Content Include="pictures\EnemyShipShoot.png" />
+    <Content Include="pictures\EnemyShipShootClassic.png" />
+    <Content Include="pictures\Help.png" />
+    <Content Include="pictures\Icon.png" />
+    <Content Include="pictures\Invincible.png" />
+    <Content Include="pictures\Laser.png" />
+    <Content Include="pictures\Missile.png" />
+    <Content Include="pictures\MissileRange.png" />
+    <Content Include="pictures\OptionBackground.png" />
+    <Content Include="pictures\PauseBackground.png" />
+    <Content Include="pictures\Shield.png" />
+    <Content Include="pictures\SpeedUp.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarAddFire.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarAttachAircraft.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarBulletSupport.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarInvincible.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarLaser.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarMissile.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarOmegaLaser.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarShield.png" />
+    <Content Include="pictures\TimeBarPictures\TimeBarSpeedUp.png" />
+    <Content Include="pictures\Title.png" />
+    <Content Include="ScoreBoard\HistoryScore.json" />
+    <Content Include="ScoreBoard\__pycache__\ScoreBoard.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\AddFire.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\AttachAircraft.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\Bullet.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\BulletSupport.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\Invincible.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\Laser.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\Missile.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\OmegaLaser.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\Shield.cpython-37.pyc" />
+    <Content Include="Weapon\__pycache__\SpeedUp.cpython-37.pyc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
