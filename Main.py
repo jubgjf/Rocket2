@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 import random
 
 sys.path.append('Enemy')
@@ -201,6 +202,8 @@ def RunGame():
         DrawAlbum = 0
         """ 显示选择火箭 """
         DrawAircraft = 0
+        """ 启动联机模式 """
+        LaunchOnline = 0
         """ 显示屏幕尺寸选择 """
         DrawSize = 0
         CenterList = [[150, 0], [400, 0], [650, 0]]
@@ -286,7 +289,7 @@ def RunGame():
                 elif OptionButtonResult == 'ChangeAirCraft':
                     DrawAircraft = 1
                 elif OptionButtonResult == 'ChangeMode':
-                    pass
+                    LaunchOnline = 1
                 elif OptionButtonResult == 'ChangeScreenSize':
                     DrawSize = 1
                 """ 显示音乐封面 """
@@ -339,6 +342,10 @@ def RunGame():
                         AircraftChoose)
                     if FinalAircraft != None:
                         Settings().SetAircraftChoose(FinalAircraft)  #重新启动游戏生效
+                """ 启动联机模式 """
+                if LaunchOnline:
+                    os.system('python Online/Client.py')
+                    exit(0)
                 """ 显示屏幕尺寸选择 """
                 while DrawSize:
                     """ 鼠标点击读取按钮位置 """
