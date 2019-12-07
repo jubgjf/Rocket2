@@ -258,7 +258,7 @@ def RunGame():
             """ 显示设置界面 """
             while GoToOption:
                 """ 按钮选择更新 """
-                if OptionButtonChooseFrequency >= 20:
+                if OptionButtonChooseFrequency >= 30:
                     OptionButtonChoose, OptionChooseButton = CheckActions(
                     ).CheckAlterChoose(OptionChooseButton, 1, 4, 0)
                 if OptionButtonChoose:
@@ -320,7 +320,7 @@ def RunGame():
                 """ 显示火箭 """
                 while DrawAircraft:
                     """ 火箭选择更新 """
-                    if AircraftAlterFrequency >= 100:
+                    if AircraftAlterFrequency >= 200:
                         AircraftAlter, AircraftChoose = CheckActions(
                         ).CheckAlterChoose(AircraftChoose, 0, 4, 1)
                     if AircraftAlter:

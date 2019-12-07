@@ -35,13 +35,13 @@ def draw_window():
     ''' 设置窗口 '''
     window = tkinter.Tk()
     window.title('Rocket2')
-    window.geometry('300x200')
+    window.geometry('500x400')
     ''' Logo '''
-    Logo = tkinter.PhotoImage(file="pictures/Icon.png")
+    Logo = tkinter.PhotoImage(file="pictures/Online/Online.png")
     logo_label = tkinter.Label(window, image=Logo)
     logo_label.pack()
     ''' 标题 '''
-    title_label = tkinter.Label(window, text='Rocket2', font=('Consolas', 18))
+    title_label = tkinter.Label(window, text='Rocket2联机模式', font=('Consolas', 18))
     title_label.pack()
     ''' 文本框标签 '''
     name_label = tkinter.Label(window, text="请输入玩家名称", font=('等线', 12))
