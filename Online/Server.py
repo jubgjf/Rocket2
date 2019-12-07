@@ -1,61 +1,56 @@
 import socket
-import threading
 import sys
 
 # 获取本地ip
-HostName = socket.gethostname()
-HOST = socket.gethostbyname(HostName)
+HOST = '172.22.12.150'
 PORT = 30000
-# 定义保存所有socket的列表
-socket_list = []
 # 创建socket对象
-ss = socket.socket()
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # 将socket绑定到本机IP和端口
-ss.bind((HOST, PORT))
-# 服务端开始监听来自客户端的连接
-ss.listen()
+s.bind((HOST, PORT))
 
 
-def read_from_client(s):
-    try:
-        return str(s.recv(2048), encoding='utf8')
-    # 如果捕获到异常，则表明该socket对应的客户端已经关闭
-    except:
-        # 删除该socket
-        socket_list.remove(s)
+def response_keys(key_str, position):
+    position_str = ''
+
+    if 'w' in key_str:
+        position[1] -= 1
+    if 'a' in key_str:
+        position[0] -= 1
+    if 's' in key_str:
+        position[1] += 1
+    if 'd' in key_str:
+        position[0] += 1
+
+    position_str = ' '.join((str(position[0]), str(position[1])))
+    return position_str
 
 
-def server_target(s):
-    try:
-        # 采用循环不断地从socket中读取客户端发送过来的数据
-        while True:
-            content = read_from_client(s)
-            Name = content.split(' ')[0]
-            PositionStr = (content.split(' ')[1], content.split(' ')[2])
-            PositionStr=' '.join(PositionStr)
-            # print(Name)
-            # print(PositionStr)
-
-            if PositionStr is None:
-                break
-
-            # else:
-            #     """ 显示客户端飞船位置 """
-            #     print('%s: %s' % (Name, PositionStr))
-
-            for client_s in socket_list:
-                client_s.sendall(bytes(content, encoding='utf8'))
-    except AttributeError:
-        print('>> AttributeError. Client may offline')
-        print('Remain %d Client Online' % len(socket_list))
-    except:
-        print('>> Unexpected Error :', sys.exc_info()[1])
+def receive_message(s):
+    global player_dict
+    """ 接收数据 """
+    data, addr = s.recvfrom(1024)  # 返回数据和接入连接的（客户端）地址
+    data = data.decode()
+    """ 拆分数据内容 """
+    data_list = data.split(' ')
+    name = data_list[0]
+    position = [int(data_list[1]), int(data_list[2])]
+    key_str = data_list[3]
+    """ 更新位置 """
+    position = response_keys(key_str, position)
+    """ 玩家集合 """
+    player_dict[addr] = ' '.join((name, position))
+    # { addr1 : "guan 100 200" , addr2 : "liu 200 230" }
+    """ 发送信息 """
+    message = ''
+    for info in player_dict.values():
+        message = message + info + ' '
+    for player in player_dict:
+        s.sendto(message.encode(), player)
 
 
-while True:
-    # 此行代码会阻塞，将一直等待别人的连接
-    s, addr = ss.accept()
-    socket_list.append(s)
-    print('%d Client Online' % len(socket_list))
-    # 每当客户端连接后启动一个线程为该客户端服务
-    threading.Thread(target=server_target, args=(s, )).start()
+if __name__ == '__main__':
+    player_dict = {}
+
+    while 1:
+        receive_message(s)

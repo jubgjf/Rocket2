@@ -1,8 +1,8 @@
 import pygame
-import sys
 import socket
 import threading
-import re
+import sys
+import time
 
 sys.path.append('..')
 
@@ -14,22 +14,12 @@ class Ship(pygame.sprite.Sprite):
         self.image = pygame.image.load(r'pictures/AttachAircraft.png')
         self.image = pygame.transform.scale(self.image, (40, 30))
         self.rect = self.image.get_rect()
-        self.rect.centerx = 100
-        self.rect.centery = 200
 
-    def draw(self):
+    def draw(self, position):
+        self.rect.centerx = position[0]
+        self.rect.centery = position[1]
+
         self.screen.blit(self.image, self.rect)
-
-    def move(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            self.rect.centery -= 1
-        if keys[pygame.K_s]:
-            self.rect.centery += 1
-        if keys[pygame.K_a]:
-            self.rect.centerx -= 1
-        if keys[pygame.K_d]:
-            self.rect.centerx += 1
 
 
 class OtherShip(pygame.sprite.Sprite):
@@ -40,21 +30,56 @@ class OtherShip(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (40, 30))
         self.rect = self.image.get_rect()
 
-    def draw(self, PositionStr):
+    def draw(self, position):
+        self.rect.centerx = position[0]
+        self.rect.centery = position[1]
+
+        self.screen.blit(self.image, self.rect)
+
+
+def get_keys():
+    keys = pygame.key.get_pressed()
+    key_set = set()
+    key_str = ''
+
+    if keys[pygame.K_w]:
+        key_set.add('w')
+    if keys[pygame.K_a]:
+        key_set.add('a')
+    if keys[pygame.K_s]:
+        key_set.add('s')
+    if keys[pygame.K_d]:
+        key_set.add('d')
+
+    for key in key_set:
+        key_str += key
+
+    return key_str
+
+
+def receive_from_server(my_name, s, HOST, PORT):
+    global my_position
+    global other_position
+
+    while True:
         try:
-            self.rect.centerx = int(PositionStr.split(' ')[0])
-            self.rect.centery = int(PositionStr.split(' ')[1])
-            self.screen.blit(self.image, self.rect)
-        except ValueError:
-            # self.rect.centerx = int(re.sub(r'\D','',PositionStr.split(' ')[0]))
-            # self.rect.centery = int(re.sub(r'\D','',PositionStr.split(' ')[1]))
-            # self.screen.blit(self.image, self.rect)
-            pass  #若改用上面三行，会存在客户端显示多余飞船的bug。若用pass,会出现飞船闪烁的bug
+            data, addr = s.recvfrom(1024)
+            data = data.decode().split(' ')
+            # print(data)
+            if data[0] == my_name:  #仅支持2人联机
+                my_position = [int(data[1]), int(data[2])]
+                other_position = [int(data[4]), int(data[5])]
+            else:
+                my_position = [int(data[4]), int(data[5])]
+                other_position = [int(data[1]), int(data[2])]
         except:
-            print('>> Unexpected Error!')
+            pass
 
 
-def run_game():
+def run_game(my_name, s, HOST, PORT):
+    global my_position
+    global other_position
+
     FpsClock = pygame.time.Clock()
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
@@ -68,20 +93,19 @@ def run_game():
         screen.fill((5, 70, 160))
 
         for i in ShipGroup:
-            i.draw()
-            i.move()
-            message = (MyName, str(i.rect.centerx), str(i.rect.centery))
-            message = ' '.join(message)
-            # print(message)
-        s.sendall(bytes(message, encoding='utf8'))
+            try:
+                i.draw(my_position)
+            except:
+                pass
+            message = ' '.join((my_name, str(i.rect.centerx),
+                                str(i.rect.centery), get_keys()))
+            s.sendto(message.encode(), (HOST, PORT))
 
-        global PositionDict
         for i in OtherShipGroup:
-            for num in range(4):  #设置为最多4人联机，可以任意增加
-                try:
-                    i.draw(PositionDict[AllName[num]])
-                except:
-                    break
+            try:
+                i.draw(other_position)
+            except:
+                pass
 
         pygame.display.update()
 
@@ -90,39 +114,23 @@ def run_game():
                 sys.exit(0)
 
 
-def read_from_server(s, MyName):
-    global AllName
-    AllName = []
-    global PositionStr
-    global PositionDict
-    PositionDict = {}
-    while True:
-        content = str(s.recv(2048), encoding='utf8')
-        Name = content.split(' ')[0]
-        # print(Name)
-        # print(PositionDict)
-        # print(AllName)
-        if MyName != Name:
-            if Name not in AllName:
-                AllName.append(Name)
-            PositionStr = content.split(' ')[1] + ' ' + content.split(' ')[2]
-            PositionDict[Name] = PositionStr
-            # print(content)
-            # print(PositionDict)
+def launch_client(my_name):
+    # my_name = input('input your name: ')
+    # print(my_name)
+
+    HOST = '172.22.12.150'
+    PORT = 30000
+    # 创建socket对象
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    my_position = []
+    other_position = []
+
+    threading.Thread(target=run_game, args=(my_name, s, HOST, PORT)).start()
+    threading.Thread(target=receive_from_server,
+                     args=(my_name, s, HOST, PORT)).start()
 
 
-HOST = '172.22.12.150'
-PORT = 30000
-# 创建socket对象
-s = socket.socket()
-# 连接远程主机
-s.connect((HOST, PORT))
-
-PositionStr = '-100 -100'
-
-# 设置名称
-MyName = input('Please input your Name: ')
-print("Hello, %s!" % MyName)
-# 客户端启动线程不断地读取来自服务器的数据
-threading.Thread(target=read_from_server, args=(s, MyName)).start()
-threading.Thread(target=run_game).start()
+if __name__ == '__main__':
+    my_name = sys.argv[1]
+    launch_client(my_name)

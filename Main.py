@@ -344,8 +344,7 @@ def RunGame():
                         Settings().SetAircraftChoose(FinalAircraft)  #重新启动游戏生效
                 """ 启动联机模式 """
                 if LaunchOnline:
-                    os.system('python Online/Client.py')
-                    exit(0)
+                    os.system('python Online/GetName.py')
                 """ 显示屏幕尺寸选择 """
                 while DrawSize:
                     """ 鼠标点击读取按钮位置 """
