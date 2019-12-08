@@ -616,45 +616,6 @@ def RunGame():
                         if pygame.sprite.spritecollide(ship, EnemyBulletGroup,
                                                        True):
                             ship.hp -= 1
-                        if pygame.sprite.spritecollide(ship, BulletGroup,
-                                                       True):
-                            ship.hp -= 1
-                        if pygame.sprite.spritecollide(ship, LaserGroup,
-                                                       False):
-                            ship.hp -= 1
-                            if pygame.sprite.spritecollide(
-                                    ship, InvincibleGroup, False):
-                                ship.hp -= 1
-                        if AircraftChoose == 2:
-                            if pygame.sprite.spritecollide(
-                                    ship, BulletSupportGroup, False):
-                                ship.hp -= 1
-                        if AircraftChoose == 3:
-                            if pygame.sprite.spritecollide(
-                                    ship, MissileGroup, False):
-                                for missile in MissileGroup:
-                                    MissileRangeGroup.add(
-                                        MissileRange(MainScreen, [
-                                            missile.rect.centerx,
-                                            missile.rect.centery
-                                        ]))
-                                    MissileGroup.remove(missile)
-                            if pygame.sprite.spritecollide(
-                                    ship, MissileRangeGroup, False):
-                                ship.hp -= 1
-                        if AircraftChoose == 4:
-                            if pygame.sprite.spritecollide(
-                                    ship, OmegaLaserGroup, True):
-                                ship.hp -= 1
-                        """ 跟随飞船发射子弹 """
-                        if AttachAircraftFireFrequency >= 30:
-                            for i in range(-1, 2, 2):
-                                BulletGroup.add(
-                                    Bullet(MainScreen, [
-                                        ship.rect.centerx + 20 * i,
-                                        ship.rect.top
-                                    ]))
-                            AttachAircraftFireFrequency = 0
                     else:
                         """ 跟随飞船生命恢复频率更新 """
                         AttachAircraftHealthFrequency += 1
@@ -745,18 +706,64 @@ def RunGame():
                     AircraftGroup.remove(ship)
                 """ 检测发射子弹 """
                 if BulletFireFrequency >= 15:
-                    BulletFire = CheckActions().CheckFire(
-                        BulletGroup, [
-                            Bullet(MainScreen,
-                                   [ship.rect.centerx, ship.rect.top]),
-                            Bullet(MainScreen,
-                                   [ship.rect.centerx + 40, ship.rect.top]),
-                            Bullet(MainScreen,
-                                   [ship.rect.centerx - 40, ship.rect.top])
-                        ],
-                        pygame.K_j,
-                        addfireready=1,
-                        addfire=len(AddFireGroup))
+                    if AircraftChoose != 0:
+                        BulletFire = CheckActions().CheckFire(
+                            BulletGroup, [
+                                Bullet(MainScreen,
+                                       [ship.rect.centerx, ship.rect.top]),
+                                Bullet(
+                                    MainScreen,
+                                    [ship.rect.centerx + 40, ship.rect.top]),
+                                Bullet(MainScreen,
+                                       [ship.rect.centerx - 40, ship.rect.top])
+                            ],
+                            pygame.K_j,
+                            addfireready=1,
+                            addfire=len(AddFireGroup))
+                    else:
+                        if len(AddFireGroup):
+                            BulletFire = CheckActions(
+                            ).CheckFire(BulletGroup, [
+                                Bullet(
+                                    MainScreen,
+                                    [ship.rect.centerx, ship.rect.top - 10]),
+                                Bullet(MainScreen, [
+                                    ship.rect.centerx + 20, ship.rect.top - 5
+                                ]),
+                                Bullet(MainScreen, [
+                                    ship.rect.centerx - 20, ship.rect.top - 5
+                                ]),
+                                Bullet(
+                                    MainScreen,
+                                    [ship.rect.centerx + 40, ship.rect.top]),
+                                Bullet(
+                                    MainScreen,
+                                    [ship.rect.centerx - 40, ship.rect.top]),
+                                Bullet(MainScreen, [
+                                    ship.rect.centerx + 60, ship.rect.top + 5
+                                ]),
+                                Bullet(MainScreen, [
+                                    ship.rect.centerx - 60, ship.rect.top + 5
+                                ])
+                            ],
+                                        pygame.K_j,
+                                        addfireready=1,
+                                        addfire=1)
+                        else:
+                            BulletFire = CheckActions(
+                            ).CheckFire(BulletGroup, [
+                                Bullet(
+                                    MainScreen,
+                                    [ship.rect.centerx, ship.rect.top - 10]),
+                                Bullet(
+                                    MainScreen,
+                                    [ship.rect.centerx + 20, ship.rect.top]),
+                                Bullet(MainScreen,
+                                       [ship.rect.centerx - 20, ship.rect.top])
+                            ],
+                                        pygame.K_j,
+                                        addfireready=1,
+                                        addfire=1)
                 if BulletFire:
                     BulletFireFrequency = 0
                     BulletFire = 0
