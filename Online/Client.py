@@ -79,6 +79,8 @@ def get_keys():
         key_set.add('s')
     if keys[pygame.K_d]:
         key_set.add('d')
+    if keys[pygame.K_p]:
+        key_set.add('p')
     # if keys[pygame.K_j]:
     #     key_set.add('j')
 

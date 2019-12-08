@@ -1,6 +1,7 @@
 import socket
 import sys
 import time
+import random
 
 # 获取本地ip
 HOST = '172.22.12.150'
@@ -12,6 +13,8 @@ s.bind((HOST, PORT))
 
 
 def response_move_keys(key_str, position):
+    global enemy_info
+    global player_add_enemy_frequency
     position_str = ''
     speed = [2, 2]
 
@@ -23,6 +26,14 @@ def response_move_keys(key_str, position):
         position[1] += speed[1]
     if 'd' in key_str:
         position[0] += speed[0]
+    if 'p' in key_str:
+        if time.time() - player_add_enemy_frequency > 1:
+            enemy_info.append(str(int(random.randint(0, 800))))
+            enemy_info.append(str(int(random.randint(0, 600))))
+            enemy_info.append(int(random.randint(1, 3)))
+            enemy_info.append(int(random.randint(1, 3)))
+            
+            player_add_enemy_frequency = time.time()
 
     position_str = ' '.join((str(position[0]), str(position[1])))
     return position_str
@@ -110,6 +121,7 @@ if __name__ == '__main__':
     enemy_info = ['100', '200', 2, 2, '300', '500', -3, 3, '200', '10', 3, -2]
     # bullet_info = ['-100', '-100']
     enemy_move_frequency = 0
+    player_add_enemy_frequency = 0
 
     while 1:
         receive_message(s)
