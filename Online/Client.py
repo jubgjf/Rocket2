@@ -51,6 +51,22 @@ class EnemyShip(pygame.sprite.Sprite):
         self.screen.blit(self.image, self.rect)
 
 
+# class Bullet(pygame.sprite.Sprite):
+#     def __init__(self,screen):
+#         super(Bullet, self).__init__()
+#         self.screen = screen
+#         self.image = pygame.image.load(r'pictures/Bullet.png')
+#         self.image = pygame.transform.smoothscale(self.image, (3, 10))
+#         self.rect = self.image.get_rect()
+
+#     def draw(self, position):
+#         self.rect.centerx = position[0]
+#         self.rect.centery = position[1]
+
+#         self.screen.blit(self.image, self.rect)
+
+
+
 def get_keys():
     keys = pygame.key.get_pressed()
     key_set = set()
@@ -64,6 +80,8 @@ def get_keys():
         key_set.add('s')
     if keys[pygame.K_d]:
         key_set.add('d')
+    # if keys[pygame.K_j]:
+    #     key_set.add('j')
 
     for key in key_set:
         key_str += key
@@ -75,6 +93,7 @@ def receive_from_server(my_name, s, HOST, PORT):
     global my_position
     global other_position
     global enemy_info
+    # global bullet_info
 
     while True:
         try:
@@ -84,12 +103,15 @@ def receive_from_server(my_name, s, HOST, PORT):
             if data[0] == my_name:  #仅支持2人联机
                 my_position = [int(data[1]), int(data[2])]
                 other_position = [int(data[4]), int(data[5])]
-            elif data[1] == my_name:
+            elif data[3] == my_name:
                 my_position = [int(data[4]), int(data[5])]
                 other_position = [int(data[1]), int(data[2])]
-            if data[0] == 'enemy':
+            elif data[0] == 'enemy':
                 enemy_info = [int(data[1]), int(data[2])]
                 # print(enemy_info)
+            # elif data[0] == 'bullet':
+            #     bullet_info = [int(data[1]), int(data[2])]
+            #     # print(bullet_info)
         except:
             pass
 
@@ -98,6 +120,7 @@ def run_game(my_name, s, HOST, PORT):
     global my_position
     global other_position
     global enemy_info
+    # global bullet_info
     """ 窗口设置 """
     FpsClock = pygame.time.Clock()
     pygame.init()
@@ -109,6 +132,8 @@ def run_game(my_name, s, HOST, PORT):
     OtherShipGroup.add(OtherShip(screen))
     EnemyShipGroup = pygame.sprite.Group()
     EnemyShipGroup.add(EnemyShip(screen))
+    # BulletGroup = pygame.sprite.Group()
+    # BulletGroup.add(Bullet(screen))
 
     while 1:
         FpsClock.tick(80)
@@ -134,6 +159,12 @@ def run_game(my_name, s, HOST, PORT):
                 i.draw(enemy_info)
             except:
                 pass
+        
+        # for i in BulletGroup:
+        #     try:
+        #         i.draw(bullet_info)
+        #     except:
+        #         pass
 
         pygame.display.update()
 
@@ -154,6 +185,7 @@ def launch_client(my_name):
     my_position = []
     other_position = []
     enemy_info = []
+    # bullet_info = []
 
     threading.Thread(target=run_game, args=(my_name, s, HOST, PORT)).start()
     threading.Thread(target=receive_from_server,
