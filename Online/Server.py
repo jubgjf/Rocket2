@@ -26,31 +26,59 @@ def response_keys(key_str, position):
     return position_str
 
 
+def enemy_move():
+    global enemy_info
+    # ['100', '200', 1, 1] 分别是横坐标、纵坐标，横向速度，纵向速度
+
+    enemy_info[0] = int(enemy_info[0])
+    enemy_info[1] = int(enemy_info[1])
+
+    enemy_info[0] += enemy_info[2]
+    enemy_info[1] += enemy_info[3]
+
+    if enemy_info[0] > 800 or enemy_info[0] < 0:
+        enemy_info[2]=-enemy_info[2]
+    if enemy_info[1] > 600 or enemy_info[1] < 0:
+        enemy_info[3]=-enemy_info[3]
+
+    enemy_info[0] = str(enemy_info[0])
+    enemy_info[1] = str(enemy_info[1])
+
+    return ' '.join((enemy_info[0], enemy_info[1])) + '  '
+
+
 def receive_message(s):
     global player_dict
     """ 接收数据 """
-    data, addr = s.recvfrom(1024)  # 返回数据和接入连接的（客户端）地址
-    data = data.decode()
-    """ 拆分数据内容 """
-    data_list = data.split(' ')
-    name = data_list[0]
-    position = [int(data_list[1]), int(data_list[2])]
-    key_str = data_list[3]
-    """ 更新位置 """
-    position = response_keys(key_str, position)
-    """ 玩家集合 """
-    player_dict[addr] = ' '.join((name, position))
-    # { addr1 : "guan 100 200" , addr2 : "liu 200 230" }
-    """ 发送信息 """
-    message = ''
-    for info in player_dict.values():
-        message = message + info + ' '
-    for player in player_dict:
-        s.sendto(message.encode(), player)
+    try:
+        data, addr = s.recvfrom(1024)  # 返回数据和接入连接的（客户端）地址
+        data = data.decode()
+        """ 拆分数据内容 """
+        data_list = data.split(' ')
+        name = data_list[0]
+        position = [int(data_list[1]), int(data_list[2])]
+        key_str = data_list[3]
+        """ 更新位置 """
+        position = response_keys(key_str, position)
+        """ 玩家集合 """
+        player_dict[addr] = ' '.join((name, position))
+        # { addr1 : "guan 100 200" , addr2 : "liu 200 230" }
+        """ 发送信息 """
+        message = ''
+        for info in player_dict.values():
+            message = message + info + ' '
+        # "guan 100 200 liu 200 230 "
+        for player in player_dict:
+            s.sendto(message.encode(), player)
+            s.sendto(('enemy ' + enemy_move()).encode(), player)  #发送外星人位置信息
+    except:
+        print('>> Error! %s\n' % sys.exc_info()[1])
+        sys.exit(0)
 
 
 if __name__ == '__main__':
     player_dict = {}
+    enemy_info = ['100', '200', 1, 1]
 
     while 1:
         receive_message(s)

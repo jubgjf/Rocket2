@@ -37,6 +37,20 @@ class OtherShip(pygame.sprite.Sprite):
         self.screen.blit(self.image, self.rect)
 
 
+class EnemyShip(pygame.sprite.Sprite):
+    def __init__(self, screen):
+        super(EnemyShip, self).__init__()
+        self.screen = screen
+        self.image = pygame.image.load(r'pictures/EnemyShipClassic.png')
+        self.rect = self.image.get_rect()
+
+    def draw(self, position):
+        self.rect.centerx = position[0]
+        self.rect.centery = position[1]
+
+        self.screen.blit(self.image, self.rect)
+
+
 def get_keys():
     keys = pygame.key.get_pressed()
     key_set = set()
@@ -60,6 +74,7 @@ def get_keys():
 def receive_from_server(my_name, s, HOST, PORT):
     global my_position
     global other_position
+    global enemy_info
 
     while True:
         try:
@@ -69,9 +84,12 @@ def receive_from_server(my_name, s, HOST, PORT):
             if data[0] == my_name:  #仅支持2人联机
                 my_position = [int(data[1]), int(data[2])]
                 other_position = [int(data[4]), int(data[5])]
-            else:
+            elif data[1] == my_name:
                 my_position = [int(data[4]), int(data[5])]
                 other_position = [int(data[1]), int(data[2])]
+            if data[0] == 'enemy':
+                enemy_info = [int(data[1]), int(data[2])]
+                # print(enemy_info)
         except:
             pass
 
@@ -79,14 +97,18 @@ def receive_from_server(my_name, s, HOST, PORT):
 def run_game(my_name, s, HOST, PORT):
     global my_position
     global other_position
-
+    global enemy_info
+    """ 窗口设置 """
     FpsClock = pygame.time.Clock()
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
+    """ 建立Group """
     ShipGroup = pygame.sprite.Group()
     ShipGroup.add(Ship(screen))
     OtherShipGroup = pygame.sprite.Group()
     OtherShipGroup.add(OtherShip(screen))
+    EnemyShipGroup = pygame.sprite.Group()
+    EnemyShipGroup.add(EnemyShip(screen))
 
     while 1:
         FpsClock.tick(80)
@@ -104,6 +126,12 @@ def run_game(my_name, s, HOST, PORT):
         for i in OtherShipGroup:
             try:
                 i.draw(other_position)
+            except:
+                pass
+
+        for i in EnemyShipGroup:
+            try:
+                i.draw(enemy_info)
             except:
                 pass
 
@@ -125,6 +153,7 @@ def launch_client(my_name):
 
     my_position = []
     other_position = []
+    enemy_info = []
 
     threading.Thread(target=run_game, args=(my_name, s, HOST, PORT)).start()
     threading.Thread(target=receive_from_server,
@@ -132,5 +161,9 @@ def launch_client(my_name):
 
 
 if __name__ == '__main__':
-    my_name = sys.argv[1]
-    launch_client(my_name)
+    try:
+        my_name = sys.argv[1]
+        launch_client(my_name)
+
+    except IndexError:
+        launch_client(input('Please input your name: '))
