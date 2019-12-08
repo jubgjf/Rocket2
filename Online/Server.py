@@ -13,15 +13,16 @@ s.bind((HOST, PORT))
 
 def response_move_keys(key_str, position):
     position_str = ''
+    speed = [2, 2]
 
     if 'w' in key_str:
-        position[1] -= 1
+        position[1] -= speed[1]
     if 'a' in key_str:
-        position[0] -= 1
+        position[0] -= speed[0]
     if 's' in key_str:
-        position[1] += 1
+        position[1] += speed[1]
     if 'd' in key_str:
-        position[0] += 1
+        position[0] += speed[0]
 
     position_str = ' '.join((str(position[0]), str(position[1])))
     return position_str
@@ -43,24 +44,30 @@ def enemy_move():
     # ['100', '200', 1, 1] 分别是横坐标、纵坐标，横向速度，纵向速度
     global enemy_move_frequency
 
-    if time.time() - enemy_move_frequency>0.01:
-        enemy_info[0] = int(enemy_info[0])
-        enemy_info[1] = int(enemy_info[1])
+    if time.time() - enemy_move_frequency > 0.01:
+        for i in range(0, len(enemy_info), 4):
+            enemy_info[i] = int(enemy_info[i])
+            enemy_info[i + 1] = int(enemy_info[i + 1])
 
-        enemy_info[0] += enemy_info[2]
-        enemy_info[1] += enemy_info[3]
+            enemy_info[i] += enemy_info[i + 2]
+            enemy_info[i + 1] += enemy_info[i + 3]
 
-        if enemy_info[0] > 800 or enemy_info[0] < 0:
-            enemy_info[2] = -enemy_info[2]
-        if enemy_info[1] > 600 or enemy_info[1] < 0:
-            enemy_info[3] = -enemy_info[3]
+            if enemy_info[i] > 800 or enemy_info[i] < 0:
+                enemy_info[i + 2] = -enemy_info[i + 2]
+            if enemy_info[i + 1] > 600 or enemy_info[i + 1] < 0:
+                enemy_info[i + 3] = -enemy_info[i + 3]
 
-        enemy_info[0] = str(enemy_info[0])
-        enemy_info[1] = str(enemy_info[1])
+            enemy_info[i] = str(enemy_info[i])
+            enemy_info[i + 1] = str(enemy_info[i + 1])
 
-        enemy_move_frequency=time.time()
+        enemy_move_frequency = time.time()
 
-    return ' '.join((enemy_info[0], enemy_info[1])) + '  '
+    result = []
+    for i in range(0, len(enemy_info), 4):
+        result.append(enemy_info[i])
+        result.append(enemy_info[i + 1])
+
+    return ' '.join(result) + ' '
 
 
 def receive_message(s):
@@ -97,10 +104,12 @@ def receive_message(s):
 
 
 if __name__ == '__main__':
+    print('Launch Server Successfully!\n')
+
     player_dict = {}
-    enemy_info = ['100', '200', 1, 1]
+    enemy_info = ['100', '200', 2, 2, '300', '500', -3, 3, '200', '10', 3, -2]
     # bullet_info = ['-100', '-100']
-    enemy_move_frequency=0
+    enemy_move_frequency = 0
 
     while 1:
         receive_message(s)

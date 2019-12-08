@@ -66,7 +66,6 @@ class EnemyShip(pygame.sprite.Sprite):
 #         self.screen.blit(self.image, self.rect)
 
 
-
 def get_keys():
     keys = pygame.key.get_pressed()
     key_set = set()
@@ -103,16 +102,17 @@ def receive_from_server(my_name, s, HOST, PORT):
             if data[0] == my_name:  #仅支持2人联机
                 my_position = [int(data[1]), int(data[2])]
                 other_position = [int(data[4]), int(data[5])]
-            elif data[3] == my_name:
+            elif len(data)>=4 and data[3] == my_name:
                 my_position = [int(data[4]), int(data[5])]
                 other_position = [int(data[1]), int(data[2])]
             elif data[0] == 'enemy':
-                enemy_info = [int(data[1]), int(data[2])]
+                enemy_info = [int(data[i]) for i in range(1, len(data)-1)]
                 # print(enemy_info)
             # elif data[0] == 'bullet':
             #     bullet_info = [int(data[1]), int(data[2])]
             #     # print(bullet_info)
         except:
+            # print('%s' % sys.exc_info()[1])
             pass
 
 
@@ -131,7 +131,6 @@ def run_game(my_name, s, HOST, PORT):
     OtherShipGroup = pygame.sprite.Group()
     OtherShipGroup.add(OtherShip(screen))
     EnemyShipGroup = pygame.sprite.Group()
-    EnemyShipGroup.add(EnemyShip(screen))
     # BulletGroup = pygame.sprite.Group()
     # BulletGroup.add(Bullet(screen))
 
@@ -154,12 +153,18 @@ def run_game(my_name, s, HOST, PORT):
             except:
                 pass
 
+        try:
+            if 2 * len(EnemyShipGroup) < len(enemy_info):
+                EnemyShipGroup.add(EnemyShip(screen))
+        except:
+            pass
         for i in EnemyShipGroup:
             try:
-                i.draw(enemy_info)
+                for j in range(0, len(enemy_info), 2):
+                    i.draw((enemy_info[j], enemy_info[j + 1]))
             except:
                 pass
-        
+
         # for i in BulletGroup:
         #     try:
         #         i.draw(bullet_info)
