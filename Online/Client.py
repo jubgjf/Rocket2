@@ -173,7 +173,7 @@ def launch_client(my_name):
     # my_name = input('input your name: ')
     # print(my_name)
 
-    HOST = '172.22.67.121'
+    HOST = '172.22.12.150'
     PORT = 30000
     # 创建socket对象
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

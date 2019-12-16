@@ -4,7 +4,8 @@ import time
 import random
 
 # 获取本地ip
-HOST = '172.22.67.121'
+HostName = socket.gethostname()
+HOST = socket.gethostbyname(HostName)
 PORT = 30000
 # 创建socket对象
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
