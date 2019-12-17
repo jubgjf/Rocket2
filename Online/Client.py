@@ -173,11 +173,12 @@ def run_game(my_name, s, HOST, PORT):
         try:
             # print(len(EnemyShipGroup), len(enemy_info))
             if 3 * len(EnemyShipGroup) < len(enemy_info):
-                for i in range(3 * enemy_index_pointer - 1,
-                               len(enemy_info) - 3, 3):
-                    # enemy_info=[100, 200, 1, 300, 400, 2, 190, 230, 3, 200, 800, 4]
-                    EnemyShipGroup.add(EnemyShip(screen, enemy_info[i]))
-                    enemy_index_pointer = enemy_info[i + 3]  #记录enemy_index到哪里了
+                EnemyShipGroup.add(EnemyShip(screen, enemy_index_pointer))
+                enemy_index_pointer=enemy_info[len(enemy_info)-1]+1
+            elif 3 * len(EnemyShipGroup) > len(enemy_info):
+                for enemy in EnemyShipGroup:
+                    if enemy.index not in enemy_info:
+                        EnemyShipGroup.remove(enemy)
         except:
             pass
 
@@ -221,8 +222,8 @@ def launch_client(my_name):
     # my_name = input('input your name: ')
     # print(my_name)
 
-    HOST = '172.22.12.150'  # 图书馆
-    # HOST = '172.22.67.121'  # 寝室
+    # HOST = '172.22.12.150'  # 图书馆
+    HOST = '172.22.67.121'  # 寝室
     PORT = 30000
     # 创建socket对象
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
