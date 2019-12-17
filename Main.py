@@ -738,32 +738,24 @@ def RunGame():
                                     [ship.rect.centerx + 40, ship.rect.top]),
                                 Bullet(
                                     MainScreen,
-                                    [ship.rect.centerx - 40, ship.rect.top]),
-                                Bullet(MainScreen, [
-                                    ship.rect.centerx + 60, ship.rect.top + 5
-                                ]),
-                                Bullet(MainScreen, [
-                                    ship.rect.centerx - 60, ship.rect.top + 5
-                                ])
+                                    [ship.rect.centerx - 40, ship.rect.top])
                             ],
                                         pygame.K_j,
                                         addfireready=1,
                                         addfire=1)
                         else:
-                            BulletFire = CheckActions(
-                            ).CheckFire(BulletGroup, [
-                                Bullet(
-                                    MainScreen,
-                                    [ship.rect.centerx, ship.rect.top - 10]),
-                                Bullet(
-                                    MainScreen,
-                                    [ship.rect.centerx + 20, ship.rect.top]),
-                                Bullet(MainScreen,
-                                       [ship.rect.centerx - 20, ship.rect.top])
-                            ],
-                                        pygame.K_j,
-                                        addfireready=1,
-                                        addfire=1)
+                            BulletFire = CheckActions().CheckFire(
+                                BulletGroup, [
+                                    Bullet(MainScreen, [
+                                        ship.rect.centerx + 15, ship.rect.top
+                                    ]),
+                                    Bullet(MainScreen, [
+                                        ship.rect.centerx - 15, ship.rect.top
+                                    ])
+                                ],
+                                pygame.K_j,
+                                addfireready=1,
+                                addfire=1)
                 if BulletFire:
                     BulletFireFrequency = 0
                     BulletFire = 0
