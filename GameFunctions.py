@@ -16,6 +16,10 @@ class CheckActions():
             return 1, Choose + 1
         elif self.keys[pygame.K_w] and Choose >= ChooseStart + 1:
             return 1, Choose - 1
+        """ 直接按数字来选择 """ 
+        for choose in range(ChooseStart, ChooseEnd + 1):
+            if eval('self.keys[pygame.K_'+str(choose)+']'):
+                return 1, choose
         if IfLoop:
             if self.keys[pygame.K_s] and Choose == ChooseEnd:
                 return 1, ChooseStart
