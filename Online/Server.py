@@ -161,8 +161,10 @@ def receive_message(s):
                 # "guan 100 200 liu 200 230 "
                 for player in player_dict:
                     s.sendto(message.encode(), player)  # 发送玩家飞船位置信息
-                    s.sendto(('enemy ' + enemy_move()).encode(),
-                             player)  # 发送外星人位置信息
+                    if enemy_move()[0].isdigit():  # 发送外星人位置信息
+                        s.sendto(('enemy ' + enemy_move()).encode(), player)
+                    else:
+                        s.sendto(('enemy ').encode(), player)
                     if bullet_move()[0].isdigit():  # 发送子弹位置信息
                         s.sendto(('bullet ' + bullet_move()).encode(), player)
                     else:
@@ -192,7 +194,7 @@ if __name__ == '__main__':
     player_dict = {}
     """ 外星人 """
     enemy_index = '1'
-    enemy_info = ['100', '200', 2, 2, '1']
+    enemy_info = []
     enemy_move_frequency = 0
     player_add_enemy_frequency = 0
     """ 子弹 """

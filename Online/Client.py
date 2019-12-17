@@ -174,7 +174,7 @@ def run_game(my_name, s, HOST, PORT):
             # print(len(EnemyShipGroup), len(enemy_info))
             if 3 * len(EnemyShipGroup) < len(enemy_info):
                 EnemyShipGroup.add(EnemyShip(screen, enemy_index_pointer))
-                enemy_index_pointer=enemy_info[len(enemy_info)-1]+1
+                enemy_index_pointer = enemy_info[len(enemy_info) - 1] + 1
             elif 3 * len(EnemyShipGroup) > len(enemy_info):
                 for enemy in EnemyShipGroup:
                     if enemy.index not in enemy_info:
@@ -182,14 +182,16 @@ def run_game(my_name, s, HOST, PORT):
         except:
             pass
 
-        for i in EnemyShipGroup:
-            try:
-                for j in range(0, len(enemy_info), 3):
-                    if i.index == enemy_info[j + 2]:
-                        i.draw((enemy_info[j], enemy_info[j + 1]))
-            except:
-                pass
+
+        for ship in EnemyShipGroup:
+            for i in range(0, len(enemy_info), 3):
+                # print(enemy_info)
+                # print(ship.index)
+                if ship.index == enemy_info[i + 2]:
+                    ship.draw((enemy_info[i], enemy_info[i + 1]))
+                    break
         """ 子弹 """
+        # print(bullet_info)
         try:
             # print(bullet_info)
             if 3 * len(BulletGroup) < len(bullet_info):
