@@ -100,39 +100,41 @@ def receive_from_server(my_name, s, HOST, PORT):
     global enemy_info
     global bullet_info
 
-    while True:
+    while 1:
         try:
             data, addr = s.recvfrom(1024)
             data = data.decode().split(' ')
-            # print(data)
-            if data[0] == my_name:  #仅支持2人联机
+            """ 以下对data进行分类 """
+            if data[0] == my_name:
+                """ 仅支持两人联机 """
                 my_position = [int(data[1]), int(data[2])]
                 other_position = [int(data[4]), int(data[5])]
             elif len(data) >= 4 and data[3] == my_name:
                 my_position = [int(data[4]), int(data[5])]
                 other_position = [int(data[1]), int(data[2])]
             elif data[0] == 'enemy':
+                """ 外星人信息 """
                 enemy_info = [int(data[i]) for i in range(1, len(data) - 1)]
-                # print(enemy_info)
             elif data[0] == 'bullet':
+                """ 子弹信息 """
                 bullet_info = [int(data[i]) for i in range(1, len(data) - 1)]
-                # print(bullet_info)
             elif data[0] == 'kill':
+                """ 玩家死亡信息 """
                 print(data[1], 'is killed')
         except:
-            # print('%s' % sys.exc_info()[1])
+            """ 建立连接刚开始时可能会抛出异常 """
             pass
 
 
 def run_game(my_name, s, HOST, PORT):
-    # time.sleep(1)  # 让recvive_from_server先启动
+    pygame.init()
+
     global my_position
     global other_position
     global enemy_info
     global bullet_info
     """ 窗口设置 """
     FpsClock = pygame.time.Clock()
-    pygame.init()
     screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption('Rocket Online --- ' + my_name)
     pygame.display.set_icon(pygame.image.load('pictures/Icon.png'))
@@ -158,7 +160,7 @@ def run_game(my_name, s, HOST, PORT):
                     message = ' '.join(('$ kill', my_name))
                     s.sendto(message.encode(), (HOST, PORT))
             except:
-                # print('>> Error! %s\n' % sys.exc_info()[1])
+                """ 刚建立连接时，my_position为空，可能会抛出异常 """
                 pass
             message = ' '.join((my_name, str(i.rect.centerx),
                                 str(i.rect.centery), get_keys()))
@@ -170,62 +172,47 @@ def run_game(my_name, s, HOST, PORT):
             except:
                 pass
         """ 外星人 """
-        try:
-            # print(len(EnemyShipGroup), len(enemy_info))
-            if 3 * len(EnemyShipGroup) < len(enemy_info):
-                EnemyShipGroup.add(EnemyShip(screen, enemy_index_pointer))
-                enemy_index_pointer = enemy_info[len(enemy_info) - 1] + 1
-            elif 3 * len(EnemyShipGroup) > len(enemy_info):
-                for enemy in EnemyShipGroup:
-                    if enemy.index not in enemy_info:
-                        EnemyShipGroup.remove(enemy)
-        except:
-            pass
+        if 3 * len(EnemyShipGroup) < len(enemy_info):
+            EnemyShipGroup.add(EnemyShip(screen, enemy_index_pointer))
+            enemy_index_pointer = enemy_info[len(enemy_info) - 1] + 1
+        elif 3 * len(EnemyShipGroup) > len(enemy_info):
+            for enemy in EnemyShipGroup:
+                if enemy.index not in enemy_info:
+                    print(enemy.index)
+                    EnemyShipGroup.remove(enemy)
 
-
-        for ship in EnemyShipGroup:
+        for enemy in EnemyShipGroup:
             for i in range(0, len(enemy_info), 3):
-                # print(enemy_info)
-                # print(ship.index)
-                if ship.index == enemy_info[i + 2]:
-                    ship.draw((enemy_info[i], enemy_info[i + 1]))
+                if enemy.index == enemy_info[i + 2]:
+                    enemy.draw((enemy_info[i], enemy_info[i + 1]))
                     break
         """ 子弹 """
-        # print(bullet_info)
-        try:
-            # print(bullet_info)
-            if 3 * len(BulletGroup) < len(bullet_info):
-                BulletGroup.add(Bullet(screen, bullet_index_pointer))
-                # bullet_index_pointer += 1
-                bullet_index_pointer = bullet_info[len(bullet_info) - 1] + 1
-                # 重新调整pointer，防止过大，否则无法发射子弹（不知道这个bug为什么出现）
-            elif 3 * len(BulletGroup) > len(bullet_info):
-                for bullet in BulletGroup:
-                    if bullet.index not in bullet_info:
-                        BulletGroup.remove(bullet)
-        except:
-            pass
+        print(bullet_info)
+        if 3 * len(BulletGroup) < len(bullet_info):
+            BulletGroup.add(Bullet(screen, bullet_index_pointer))
+            bullet_index_pointer = bullet_info[len(bullet_info) - 1] + 1
+            # 重新调整pointer，防止过大，否则无法发射子弹（不知道这个bug为什么出现）
+        elif 3 * len(BulletGroup) > len(bullet_info):
+            for bullet in BulletGroup:
+                if bullet.index not in bullet_info:
+                    BulletGroup.remove(bullet)
 
         for bullet in BulletGroup:
             for i in range(0, len(bullet_info), 3):
                 if bullet.index == bullet_info[i + 2]:
                     bullet.draw((bullet_info[i], bullet_info[i + 1]))
-                    # print(bullet_info)
                     break
         """ 刷新屏幕 """
         pygame.display.update()
-
+        """ 检测退出 """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)
 
 
 def launch_client(my_name):
-    # my_name = input('input your name: ')
-    # print(my_name)
-
-    # HOST = '172.22.12.150'  # 图书馆
-    HOST = '172.22.67.121'  # 寝室
+    HOST = '172.22.12.150'  # 图书馆
+    # HOST = '172.22.67.121'  # 寝室
     PORT = 30000
     # 创建socket对象
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -236,7 +223,6 @@ def launch_client(my_name):
 
 
 if __name__ == '__main__':
-
     my_position = []
     other_position = []
     enemy_info = []
