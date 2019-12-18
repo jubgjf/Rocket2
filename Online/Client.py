@@ -37,6 +37,20 @@ class OtherShip(pygame.sprite.Sprite):
         self.screen.blit(self.image, self.rect)
 
 
+class AircraftMap(pygame.sprite.Sprite):
+    def __init__(self, screen, index):
+        super(AircraftMap, self).__init__()
+        self.screen = screen
+        self.index = index
+        self.image = pygame.image.load(r'pictures/Online/AircraftMap.png')
+        self.rect = self.image.get_rect()
+        self.rect.centerx = 200
+        self.rect.centery = -50
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
+
+
 class EnemyShip(pygame.sprite.Sprite):
     def __init__(self, screen, index):
         super(EnemyShip, self).__init__()
@@ -162,6 +176,9 @@ def run_game(my_name, s, HOST, PORT):
     ShipGroup.add(Ship(screen))
     OtherShipGroup = pygame.sprite.Group()
     OtherShipGroup.add(OtherShip(screen))
+    AircraftMapGroup = pygame.sprite.Group()
+    AircraftMapGroup.add(AircraftMap(screen, 'me'))
+    AircraftMapGroup.add(AircraftMap(screen, 'other'))
     EnemyShipGroup = pygame.sprite.Group()
     enemy_index_pointer = '1'
     BulletGroup = pygame.sprite.Group()
@@ -170,6 +187,24 @@ def run_game(my_name, s, HOST, PORT):
     while 1:
         FpsClock.tick(80)
         screen.fill((5, 70, 160))
+        """ 飞船重生引导箭头 """
+        for pointer in AircraftMapGroup:
+            try:
+                if pointer.index == 'me':
+                    if my_position[1] > 600:
+                        pointer.rect.bottom = 600
+                        pointer.rect.centerx = my_position[0]
+                    else:
+                        pointer.rect.centery = -50
+                elif pointer.index == 'other':
+                    if other_position[1] > 600:
+                        pointer.rect.bottom = 600
+                        pointer.rect.centerx = my_position[0]
+                    else:
+                        pointer.rect.centery = -50
+                pointer.draw()
+            except:
+                pass
         """ 玩家飞船 """
         for i in ShipGroup:
             try:
@@ -205,7 +240,6 @@ def run_game(my_name, s, HOST, PORT):
                 if enemy.index == enemy_info[i + 2]:
                     enemy.draw((enemy_info[i], enemy_info[i + 1]))
                     break
-                
         """ 子弹 """
         if 3 * len(BulletGroup) < len(bullet_info):
             BulletGroup.add(Bullet(screen, bullet_index_pointer))

@@ -93,7 +93,8 @@ def bullet_move():
     try:
         if time.time() - bullet_move_frequency > 0.02:
             for i in range(0, len(bullet_info), 3):
-                if int(bullet_info[i + 1]) < -20:
+                if int(bullet_info[i + 1]) < -20 or \
+                     int(bullet_info[i + 1]) > 620:
                     for j in range(3):
                         """ 移除屏幕外子弹 """
                         del (bullet_info[i])
@@ -140,8 +141,32 @@ def bullet_kill():
         pass
 
 
+def player_kill():
+    global position
+    global enemy_info
+
+    player_position = position.split(' ')
+    player_position = [int(p) for p in player_position]
+    enemy_position = [
+        int(enemy_info[i]) for i in range(len(enemy_info))
+        if (i % 5 == 0 or i % 5 == 1)
+    ]
+
+    for i in range(0, len(enemy_position), 2):
+        if player_position[0] - enemy_position[i] <= 25 and \
+            player_position[0] - enemy_position[i] >= -25 and \
+                player_position[1] - enemy_position[i + 1] <= 20 and \
+                    player_position[1] - enemy_position[i + 1] >= -20:
+            player_position[0] = 300
+            player_position[1] = 800  #在(300, 400)位置处重生
+            player_position = [str(p) for p in player_position]
+            position = ' '.join(player_position)
+            break
+
+
 def receive_message(s):
     global player_dict
+    global position
     while 1:
         bullet_kill()
         try:
@@ -158,6 +183,7 @@ def receive_message(s):
                 key_str = data_list[3]  # 'wasdj'
                 """ 更新位置 """
                 position = response_client_keys(key_str, position)  # '102 201'
+                player_kill()
                 """ 玩家集合 """
                 player_dict[addr] = ' '.join((name, position))
                 # { addr1 : "guan 100 200" , addr2 : "liu 200 230" }
@@ -181,6 +207,7 @@ def receive_message(s):
                         message = ' '.join(('kill', data_list[2]))
                         s.sendto(message.encode(), player)
         except:
+            print('>> Error for receive_message()')
             print(sys.exc_info())
 
 
@@ -197,6 +224,8 @@ if __name__ == '__main__':
     print('Launch Server Successfully!')
     """ 玩家字典 """
     player_dict = {}
+    """ 玩家位置 """
+    position = ''
     """ 外星人 """
     enemy_index = '1'
     enemy_info = []
