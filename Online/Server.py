@@ -169,10 +169,8 @@ def receive_message(s):
                     s.sendto(message.encode(), player)  # 发送玩家飞船位置信息
                     if enemy_move()[0].isdigit():  # 发送外星人位置信息
                         s.sendto(('enemy ' + enemy_move()).encode(), player)
-                        print('enemy ' + enemy_move())
                     else:
                         s.sendto(('enemy ').encode(), player)
-                        print('enemy ')
                     if bullet_move()[0].isdigit():  # 发送子弹位置信息
                         s.sendto(('bullet ' + bullet_move()).encode(), player)
                     else:

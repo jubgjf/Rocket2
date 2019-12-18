@@ -115,15 +115,34 @@ def receive_from_server(my_name, s, HOST, PORT):
             elif data[0] == 'enemy':
                 """ 外星人信息 """
                 enemy_info = [int(data[i]) for i in range(1, len(data) - 1)]
+                for i in range(0, len(enemy_info), 3):
+                    enemy_info[i + 2] = str(enemy_info[i + 2])
             elif data[0] == 'bullet':
                 """ 子弹信息 """
                 bullet_info = [int(data[i]) for i in range(1, len(data) - 1)]
+                for i in range(0, len(bullet_info), 3):
+                    bullet_info[i + 2] = str(bullet_info[i + 2])
             elif data[0] == 'kill':
                 """ 玩家死亡信息 """
                 print(data[1], 'is killed')
         except:
             """ 建立连接刚开始时可能会抛出异常 """
             pass
+
+
+def avoid_enemy_info_empty(enemy_info):
+    """ 由于网络延时，收到的enemy_info有时会突变为空列表，导致所有外星人突然消失 """
+    global temp_enemy_info  # 作为enemy_info非空时的缓存
+
+    if enemy_info == []:
+        if len(temp_enemy_info) == 3:
+            temp_enemy_info = enemy_info
+        else:  #说明enemy_info是突变为空列表
+            enemy_info = temp_enemy_info
+    if enemy_info != []:
+        temp_enemy_info = enemy_info
+
+    return enemy_info
 
 
 def run_game(my_name, s, HOST, PORT):
@@ -144,9 +163,9 @@ def run_game(my_name, s, HOST, PORT):
     OtherShipGroup = pygame.sprite.Group()
     OtherShipGroup.add(OtherShip(screen))
     EnemyShipGroup = pygame.sprite.Group()
-    enemy_index_pointer = 1
+    enemy_index_pointer = '1'
     BulletGroup = pygame.sprite.Group()
-    bullet_index_pointer = 1
+    bullet_index_pointer = '1'
 
     while 1:
         FpsClock.tick(80)
@@ -172,13 +191,13 @@ def run_game(my_name, s, HOST, PORT):
             except:
                 pass
         """ 外星人 """
+        enemy_info = avoid_enemy_info_empty(enemy_info)
         if 3 * len(EnemyShipGroup) < len(enemy_info):
             EnemyShipGroup.add(EnemyShip(screen, enemy_index_pointer))
-            enemy_index_pointer = enemy_info[len(enemy_info) - 1] + 1
+            enemy_index_pointer = str(int(enemy_index_pointer) + 1)
         elif 3 * len(EnemyShipGroup) > len(enemy_info):
             for enemy in EnemyShipGroup:
                 if enemy.index not in enemy_info:
-                    print(enemy.index)
                     EnemyShipGroup.remove(enemy)
 
         for enemy in EnemyShipGroup:
@@ -186,12 +205,11 @@ def run_game(my_name, s, HOST, PORT):
                 if enemy.index == enemy_info[i + 2]:
                     enemy.draw((enemy_info[i], enemy_info[i + 1]))
                     break
+                
         """ 子弹 """
-        print(bullet_info)
         if 3 * len(BulletGroup) < len(bullet_info):
             BulletGroup.add(Bullet(screen, bullet_index_pointer))
-            bullet_index_pointer = bullet_info[len(bullet_info) - 1] + 1
-            # 重新调整pointer，防止过大，否则无法发射子弹（不知道这个bug为什么出现）
+            bullet_index_pointer = str(int(bullet_index_pointer) + 1)
         elif 3 * len(BulletGroup) > len(bullet_info):
             for bullet in BulletGroup:
                 if bullet.index not in bullet_info:
@@ -226,6 +244,7 @@ if __name__ == '__main__':
     my_position = []
     other_position = []
     enemy_info = []
+    temp_enemy_info = []
     bullet_info = []
     bullet_fire_frequency = 0
 
