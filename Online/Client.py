@@ -151,7 +151,7 @@ def avoid_enemy_info_empty(enemy_info):
     if enemy_info == []:
         if len(temp_enemy_info) == 3:
             temp_enemy_info = enemy_info
-        else:  #说明enemy_info是突变为空列表
+        else:  # 说明enemy_info是突变为空列表
             enemy_info = temp_enemy_info
     if enemy_info != []:
         temp_enemy_info = enemy_info
@@ -194,14 +194,24 @@ def run_game(my_name, s, HOST, PORT):
                     if my_position[1] > 600:
                         pointer.rect.bottom = 600
                         pointer.rect.centerx = my_position[0]
+                        pointer.image = pygame.transform.smoothscale(
+                            pointer.image, (int(
+                                (my_position[1] - 590) / 10), 10))
                     else:
                         pointer.rect.centery = -50
+                        pointer.image = pygame.image.load(
+                            r'pictures/Online/AircraftMap.png')
                 elif pointer.index == 'other':
                     if other_position[1] > 600:
                         pointer.rect.bottom = 600
-                        pointer.rect.centerx = my_position[0]
+                        pointer.rect.centerx = other_position[0]
+                        pointer.image = pygame.transform.smoothscale(
+                            pointer.image, (int(
+                                (other_position[1] - 590) / 10), 10))
                     else:
                         pointer.rect.centery = -50
+                        pointer.image = pygame.image.load(
+                            r'pictures/Online/AircraftMap.png')
                 pointer.draw()
             except:
                 pass
