@@ -18,15 +18,15 @@ class Aircraft(pygame.sprite.Sprite):
         """ 加载图片 """
         self.AllImage = []
         self.AllImage.append(
-            pygame.image.load('pictures/Aircraft/0.png').convert_alpha())
+            pygame.image.load('pictures/AirCraft/0.png').convert_alpha())
         self.AllImage.append(
-            pygame.image.load('pictures/Aircraft/1.png').convert_alpha())
+            pygame.image.load('pictures/AirCraft/1.png').convert_alpha())
         self.AllImage.append(
-            pygame.image.load('pictures/Aircraft/2.png').convert_alpha())
+            pygame.image.load('pictures/AirCraft/2.png').convert_alpha())
         self.AllImage.append(
-            pygame.image.load('pictures/Aircraft/3.png').convert_alpha())
+            pygame.image.load('pictures/AirCraft/3.png').convert_alpha())
         self.AllImage.append(
-            pygame.image.load('pictures/Aircraft/4.png').convert_alpha())
+            pygame.image.load('pictures/AirCraft/4.png').convert_alpha())
         self.image = pygame.transform.smoothscale(self.AllImage[self.AircraftNumber], (50, 40))
 
         self.rect = self.image.get_rect()

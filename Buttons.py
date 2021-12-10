@@ -340,7 +340,7 @@ class OptionChangeAirCraftButton(pygame.sprite.Sprite):
         self.height = height
         """ 加载图片 """
         self.image = pygame.image.load(
-            'pictures/Buttons/Option/ChangeAirCraftButton.png').convert_alpha(
+            'pictures/Buttons/Option/ChangeAircraftButton.png').convert_alpha(
             )
         self.image = pygame.transform.smoothscale(self.image, (200, 75))
         """ 矩形 """
